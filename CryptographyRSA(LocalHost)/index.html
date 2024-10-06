@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption and Decryption in Browser</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.0.0-beta.1/jsencrypt.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #gif {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #inputField {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+            width: 30%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #messageContainer {
+            margin-top: 20px;
+            word-wrap: break-word;
+            word-break: break-word;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        #encryptedMessage, #decryptedMessage {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            button {
+                width: 45%;
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            button {
+                width: 100%;
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            #inputField {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            #messageContainer {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- GIF above the input field (local file) -->
+        <img id="gif" src="end-to-end-encryption.gif" alt="Loading..." />
+
+        <!-- Input field for the user message -->
+        <input type="text" id="inputField" placeholder="Enter a value">
+        
+        <!-- Buttons for Encrypt, Decrypt, and Clear actions -->
+        <div>
+            <button onclick="showValue()">Encrypt</button>
+            <button onclick="decryptMessage()">Decrypt</button>
+            <button onclick="clearFields()">Clear</button>
+        </div>
+
+        <!-- Message display area -->
+        <div id="messageContainer">
+            <div id="encryptedMessage"></div>
+            <div id="decryptedMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        let publicKey, privateKey, encryptedMessage;
+
+        function showValue() {
+            const encrypt = new JSEncrypt();
+            encrypt.getKey(2048);
+            publicKey = encrypt.getPublicKey();
+            privateKey = encrypt.getPrivateKey();
+            console.log("Public Key:", publicKey);
+            console.log("Private Key:", privateKey);
+
+            const originalMessage = document.getElementById('inputField').value;
+            encryptedMessage = encrypt.encrypt(originalMessage);
+            document.getElementById('encryptedMessage').textContent = "Encrypted Message: " + encryptedMessage;
+        }
+
+        function decryptMessage() {
+            const decrypt = new JSEncrypt();
+            decrypt.setPrivateKey(privateKey);
+            const decryptedMessage = decrypt.decrypt(encryptedMessage);
+            document.getElementById('decryptedMessage').textContent = "Decrypted Message: " + decryptedMessage;
+        }
+
+        function clearFields() {
+            document.getElementById('inputField').value = '';
+            document.getElementById('encryptedMessage').textContent = '';
+            document.getElementById('decryptedMessage').textContent = '';
+        }
+    </script>
+</body>
+</html>
